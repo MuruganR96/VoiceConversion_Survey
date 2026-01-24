@@ -33,8 +33,8 @@
 
 | Document | Size | Description |
 |----------|------|-------------|
-| **SERVER_SIDE_GPU_MODELS.md** | 18KB | 7 state-of-the-art GPU models analyzed |
-| **SERVER_DEPLOYMENT_GUIDE.md** | 14KB | Quick setup guide for GPU deployment |
+| **SERVER_SIDE_GPU_MODELS.md** | 22KB | 9 state-of-the-art GPU models analyzed |
+| **SERVER_DEPLOYMENT_GUIDE.md** | 18KB | Quick setup guide for GPU deployment |
 
 ### Testing Infrastructure
 
@@ -215,8 +215,10 @@ python api.py  # Start API server
 | **GPT-SoVITS** | ★★★★★ | 300-800ms | 5s-1min | Best quality |
 | **RVC** | ★★★★★ | 100-300ms | 10min+ | Real-time |
 | **SoftVC VITS** | ★★★★★ | 150-400ms | 10min+ | Singing |
+| **DDSP-SVC** | ★★★★☆ | 100-300ms | 10min+ | Singing (hybrid) |
 | **Seed-VC** | ★★★★ | 50-150ms | Zero-shot | Lowest latency |
 | **FreeVC** | ★★★★ | 200-600ms | Zero-shot | Research |
+| **kNN-VC** | ★★★★ | 300ms (CPU) | Zero-shot | **CPU-compatible** |
 
 ---
 
@@ -259,16 +261,25 @@ python api.py  # Start API server
 - WebSocket support
 
 ### Scenario 4: Singing Voice Conversion
-**Use**: SoftVC VITS (GPU server)
+**Use**: SoftVC VITS or DDSP-SVC (GPU server)
 - Specialized for singing
 - Excellent quality
 - Automatic pitch prediction
+- DDSP-SVC: Hybrid approach with interpretable DSP
 
 ### Scenario 5: Research / Zero-Shot
-**Use**: FreeVC or Seed-VC
+**Use**: FreeVC, Seed-VC, or kNN-VC
 - No training data needed
 - Any-to-any conversion
 - Flexible experimentation
+- kNN-VC: Works on CPU!
+
+### Scenario 6: Server Without GPU
+**Use**: kNN-VC (CPU server)
+- CPU-compatible (no GPU needed)
+- Zero-shot capability
+- Runs on any platform (Linux/Windows/macOS)
+- Good quality (WER 6.29%)
 
 ---
 
@@ -377,6 +388,13 @@ cd seed-vc
 pip install -r requirements.txt
 python download_models.py
 # Use Python API (see SERVER_DEPLOYMENT_GUIDE.md)
+
+# Option 4: kNN-VC (CPU-Compatible, No GPU Needed!)
+git clone https://github.com/bshall/knn-vc.git
+cd knn-vc
+pip install -r requirements.txt
+# Download pretrained models (see SERVER_DEPLOYMENT_GUIDE.md)
+# Works on CPU - great for servers without GPU!
 ```
 
 ---
@@ -397,8 +415,10 @@ python download_models.py
 | GPT-SoVITS | 6-12GB | 300-800ms | 4.6/5.0 |
 | RVC | 2-6GB | 100-300ms | 4.5/5.0 |
 | SoftVC VITS | 3-5GB | 150-400ms | 4.5/5.0 |
+| DDSP-SVC | 4-8GB | 100-300ms | 4.4/5.0 |
 | Seed-VC | 2-4GB | 50-150ms | 4.2/5.0 |
 | FreeVC | 4-6GB | 200-600ms | 4.1/5.0 |
+| **kNN-VC** | **CPU: 8GB RAM** | **300ms (CPU)** | **4.0/5.0** |
 
 ---
 
@@ -475,10 +495,18 @@ python download_models.py
 - Lower GPU requirements than GPT-SoVITS
 
 ### For Research/Experimentation
-**Use FreeVC or Seed-VC**
+**Use FreeVC, Seed-VC, or kNN-VC**
 - Zero-shot capability
 - Flexible
 - No training data needed
+- kNN-VC: Simple non-parametric approach on CPU
+
+### For Server Without GPU
+**Use kNN-VC** (CPU-Compatible)
+- No GPU required (works on any CPU)
+- Zero-shot voice conversion
+- Runs on Linux/Windows/macOS
+- Good quality with lower latency than typical CPU models
 
 ---
 
@@ -504,9 +532,10 @@ python download_models.py
 
 ## 📊 Success Metrics
 
-✅ **Documentation**: 120KB+ comprehensive guides
+✅ **Documentation**: 140KB+ comprehensive guides
 ✅ **Edge Solution**: WORLD Vocoder working and tested
-✅ **Server Solutions**: 5+ GPU models documented with repos
+✅ **Server Solutions**: 9 GPU models documented with repos
+✅ **CPU Server Option**: kNN-VC for deployment without GPU
 ✅ **Testing**: Actual performance benchmarks collected
 ✅ **GitHub**: All code pushed and accessible
 ✅ **Deployment Guides**: Step-by-step for both edge and server
@@ -520,15 +549,18 @@ python download_models.py
 
 **What You Have**:
 - ✅ Complete edge deployment solution (tested)
-- ✅ Complete server deployment guide (documented)
+- ✅ Complete server deployment guide (9 models documented)
 - ✅ Working test framework with results
-- ✅ 120KB+ of comprehensive documentation
+- ✅ 140KB+ of comprehensive documentation
 - ✅ All repositories cloned and integrated
 - ✅ Production deployment examples
+- ✅ CPU-compatible server option (kNN-VC)
 
 **Ready to Deploy**:
 - Edge: WORLD Vocoder (C++) for <2MB deployment
-- Server: GPT-SoVITS/RVC for high-quality APIs
+- Server (GPU): GPT-SoVITS/RVC for high-quality APIs
+- Server (CPU): kNN-VC for deployment without GPU
+- Singing: DDSP-SVC/SoftVC VITS for singing voice conversion
 
 **Last Updated**: January 24, 2026
-**Version**: 2.0 - Complete Edge & Server Solutions
+**Version**: 2.1 - Added DDSP-SVC & kNN-VC (9 GPU Models Total)

@@ -17,12 +17,16 @@
 → NO: Continue to Q3
 
 **Q3: Is this for singing voice conversion?**
-→ **YES**: Use **SoftVC VITS**
+→ **YES**: Use **SoftVC VITS** or **DDSP-SVC**
 → NO: Continue to Q4
 
 **Q4: Do you need zero-shot (no training)?**
-→ **YES**: Use **FreeVC** or **Seed-VC**
-→ NO: Use **RVC** (best balance)
+→ **YES**: Use **FreeVC** or **Seed-VC** or **kNN-VC**
+→ NO: Continue to Q5
+
+**Q5: Do you have GPU available?**
+→ **YES**: Use **RVC** (best balance)
+→ NO: Use **kNN-VC** (CPU-compatible)
 
 ---
 
@@ -200,14 +204,157 @@ sf.write("converted.wav", output, 16000)
 
 ---
 
+### 🎤 #4: DDSP-SVC - Hybrid DSP+ML for Singing
+
+**Why**: Efficient hybrid approach, singing voice optimization, interpretable DSP
+
+**Setup Time**: 25 minutes
+
+**Quick Start**:
+```bash
+# Clone
+git clone https://github.com/yxlllc/DDSP-SVC.git
+cd DDSP-SVC
+
+# Install (Python 3.8+)
+pip install -r requirements.txt
+
+# Download pretrained model
+# Check releases: https://github.com/yxlllc/DDSP-SVC/releases
+# Download and extract to pretrain/ folder
+
+# Preprocess (if training)
+python preprocess.py -c configs/config.yaml
+
+# Inference
+python main.py -i input.wav -m pretrain/model.pt -o output.wav -k 5
+# -k: pitch shift in semitones (+5 for M2F, -5 for F2M)
+```
+
+**Python API**:
+```python
+import torch
+import librosa
+import soundfile as sf
+from infer import DDSPInfer
+
+# Load model
+model = DDSPInfer(
+    model_path="pretrain/model.pt",
+    config_path="configs/config.yaml",
+    device="cuda"
+)
+
+# Convert
+output = model.infer(
+    audio_path="male_voice.wav",
+    pitch_shift=5,  # semitones
+    f0_method="rmvpe"
+)
+
+sf.write("converted.wav", output, 44100)
+```
+
+**Requirements**:
+- GPU: NVIDIA RTX 4060+ (4GB VRAM minimum)
+- RAM: 16GB+
+- Storage: 2GB
+- OS: Linux or Windows
+
+**Pros**:
+✅ Efficient (100-300ms latency)
+✅ Singing voice optimized
+✅ Interpretable DSP components
+✅ Smaller model size vs pure DL
+
+**Cons**:
+⚠️ Singing-focused (may be suboptimal for speech)
+⚠️ Requires ContentVec/HuBERT encoder
+
+---
+
+### 💻 #5: kNN-VC - CPU-Compatible Zero-Shot
+
+**Why**: Works on CPU, zero-shot, no training needed, simple deployment
+
+**Setup Time**: 20 minutes
+
+**Quick Start**:
+```bash
+# Clone
+git clone https://github.com/bshall/knn-vc.git
+cd knn-vc
+
+# Install
+pip install -r requirements.txt
+
+# Download pretrained models
+wget https://github.com/bshall/knn-vc/releases/download/v0.1/checkpoint.pt
+wget https://github.com/bshall/knn-vc/releases/download/v0.1/wavlm.pt
+
+# Inference
+python inference.py \
+  --source male_voice.wav \
+  --reference female_voice.wav \
+  --checkpoint checkpoint.pt \
+  --wavlm wavlm.pt \
+  --output converted.wav
+```
+
+**Python API**:
+```python
+import torch
+from knnvc import KNeighborsVC
+import soundfile as sf
+
+# Load model (works on CPU!)
+device = "cpu"  # or "cuda" if available
+model = KNeighborsVC(
+    checkpoint_path="checkpoint.pt",
+    wavlm_path="wavlm.pt",
+    device=device
+)
+
+# Convert (zero-shot - no training needed)
+output = model.convert(
+    source_path="male_voice.wav",
+    reference_path="female_voice.wav",
+    k=4  # number of nearest neighbors
+)
+
+sf.write("converted.wav", output, 16000)
+```
+
+**Requirements**:
+- GPU: Optional (CPU-compatible!)
+- RAM: 8GB+ (CPU mode)
+- VRAM: 2-4GB (if using GPU)
+- Storage: 1.5GB
+- OS: Linux, Windows, or macOS
+
+**Pros**:
+✅ **CPU-compatible** (unique feature!)
+✅ Zero-shot (no training)
+✅ Simple non-parametric approach
+✅ Works on macOS, Windows, Linux
+
+**Cons**:
+⚠️ Variable latency (depends on k)
+⚠️ Quality lower than GPT-SoVITS
+⚠️ Slower on CPU (300-1000ms)
+
+---
+
 ## GPU Requirements
 
 ### Minimum Specs
 
 | Model | GPU | VRAM | RAM | Storage |
 |-------|-----|------|-----|---------|
+| **kNN-VC** | None (CPU) | - | 8GB | 1.5GB |
 | **Seed-VC** | GTX 1060 | 2GB | 8GB | 1GB |
 | **RVC** | GTX 1660 | 4GB | 8GB | 3GB |
+| **DDSP-SVC** | RTX 4060 | 4GB | 16GB | 2GB |
 | **SoftVC VITS** | RTX 2060 | 6GB | 16GB | 4GB |
 | **GPT-SoVITS** | RTX 3060 | 6GB | 16GB | 5GB |
 | **FreeVC** | RTX 2060 | 4GB | 16GB | 3GB |
@@ -673,20 +820,33 @@ model.enable_gradient_checkpointing()
 
 **Quick Setup Ranking**:
 1. Seed-VC (15 min)
-2. RVC (20 min)
-3. GPT-SoVITS (30 min)
+2. kNN-VC (20 min)
+3. RVC (20 min)
+4. DDSP-SVC (25 min)
+5. GPT-SoVITS (30 min)
 
 **Quality Ranking**:
 1. GPT-SoVITS (4.65/5.0)
 2. SoftVC VITS (4.50/5.0)
 3. RVC (4.50/5.0)
+4. DDSP-SVC (4.40/5.0)
+5. kNN-VC (4.00/5.0)
 
 **Speed Ranking**:
-1. Seed-VC (50ms)
-2. RVC (100ms)
-3. SoftVC VITS (150ms)
+1. Seed-VC (50ms GPU)
+2. RVC (100ms GPU)
+3. DDSP-SVC (150ms GPU)
+4. SoftVC VITS (150ms GPU)
+5. kNN-VC (300ms CPU, 100ms GPU)
 
-**Recommended**: Start with **RVC** for balanced quality/speed, upgrade to **GPT-SoVITS** if you need the absolute best quality.
+**Special Recommendations**:
+- **No GPU available?** → Use **kNN-VC** (CPU-compatible)
+- **Singing voice?** → Use **DDSP-SVC** or **SoftVC VITS**
+- **Best quality?** → Use **GPT-SoVITS**
+- **Balanced?** → Use **RVC**
+- **Fastest?** → Use **Seed-VC**
+
+**Recommended**: Start with **RVC** for balanced quality/speed, upgrade to **GPT-SoVITS** if you need the absolute best quality, or use **kNN-VC** if you don't have GPU access.
 
 ---
 

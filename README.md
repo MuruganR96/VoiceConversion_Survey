@@ -68,6 +68,8 @@ This repository provides comprehensive documentation, testing frameworks, and de
 
 ### Server Deployment (GPU State-of-the-Art)
 
+**9 GPU-optimized models** for high-quality voice conversion:
+
 - **GPT-SoVITS** ⭐ Best Quality
   - Memory: 500MB-1GB
   - Quality: Exceptional (MOS 4.6/5.0)
@@ -97,6 +99,26 @@ This repository provides comprehensive documentation, testing frameworks, and de
   - Quality: Good
   - Zero-shot: Yes (no training)
   - Use: Research, any-to-any conversion
+
+- **DDSP-SVC** (Hybrid DSP+ML)
+  - Memory: 50-100MB
+  - Quality: Excellent (singing voice)
+  - Latency: 100-300ms
+  - Use: Singing voice with interpretable DSP
+
+- **kNN-VC** ⭐ CPU-Compatible
+  - Memory: ~300MB
+  - Quality: Good
+  - **CPU-friendly**: Works without GPU!
+  - Use: Zero-shot, CPU server deployment
+
+- **VITS** (Multi-speaker TTS)
+  - Memory: 100-500MB
+  - Quality: Excellent
+  - Use: TTS with voice conversion
+
+- **Kaldi** (Traditional ASR-based)
+  - Complex setup, research-oriented
 
 📘 **See**: [SERVER_SIDE_GPU_MODELS.md](SERVER_SIDE_GPU_MODELS.md) for complete GPU deployment guide
 
@@ -476,13 +498,16 @@ A: -4 to -7 semitones (F0 multiply by 0.6-0.75) with formant shift -15-20%.
 A: Edge (WORLD/PSOLA) for real-time on-device. Server (GPT-SoVITS/RVC) for highest quality batch processing.
 
 **Q: What's the best GPU model for production?**
-A: GPT-SoVITS for best quality, RVC for real-time, Seed-VC for lowest latency. See SERVER_DEPLOYMENT_GUIDE.md.
+A: GPT-SoVITS for best quality, RVC for real-time, Seed-VC for lowest latency, kNN-VC if no GPU. See SERVER_DEPLOYMENT_GUIDE.md.
+
+**Q: Can I use server models without GPU?**
+A: Yes! kNN-VC is CPU-compatible and works on any platform (Linux/Windows/macOS) without requiring NVIDIA GPU.
 
 ---
 
 **Last Updated**: January 24, 2026
-**Version**: 2.0 (Added Server-Side GPU Models)
-**Status**: Complete - Edge & Server Solutions
+**Version**: 2.1 (Added DDSP-SVC & kNN-VC)
+**Status**: Complete - Edge & Server Solutions (9 GPU models)
 
 ---
 
@@ -496,11 +521,13 @@ A: GPT-SoVITS for best quality, RVC for real-time, Seed-VC for lowest latency. S
 - [🔧 WORLD Setup](https://github.com/mmorise/World) - Recommended edge solution
 
 ### Server Deployment (GPU, High Quality)
-- [🚀 Server-Side GPU Models](SERVER_SIDE_GPU_MODELS.md) - State-of-the-art DL models
+- [🚀 Server-Side GPU Models](SERVER_SIDE_GPU_MODELS.md) - 9 state-of-the-art DL models
 - [⚡ Server Deployment Guide](SERVER_DEPLOYMENT_GUIDE.md) - Quick setup & API deployment
 - [🏆 GPT-SoVITS](https://github.com/RVC-Boss/GPT-SoVITS) - Best quality (recommended)
 - [⚡ RVC](https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI) - Real-time server
 - [🎵 SoftVC VITS](https://github.com/svc-develop-team/so-vits-svc) - Singing voice
+- [🎤 DDSP-SVC](https://github.com/yxlllc/DDSP-SVC) - Hybrid DSP+ML for singing
+- [💻 kNN-VC](https://github.com/bshall/knn-vc) - CPU-compatible zero-shot
 
 ### Resources
 - [📚 Awesome Voice Conversion](https://github.com/JeffC0628/awesome-voice-conversion) - Curated list
@@ -518,6 +545,12 @@ A: GPT-SoVITS for best quality, RVC for real-time, Seed-VC for lowest latency. S
 
 **Need real-time on server?**
 → Use **RVC** or **Seed-VC** (GPU) - [Start Here](SERVER_DEPLOYMENT_GUIDE.md)
+
+**Need server without GPU?**
+→ Use **kNN-VC** (CPU-compatible) - [Start Here](SERVER_DEPLOYMENT_GUIDE.md)
+
+**Need singing voice conversion?**
+→ Use **DDSP-SVC** or **SoftVC VITS** (GPU) - [Start Here](SERVER_DEPLOYMENT_GUIDE.md)
 
 **Just want to test quickly?**
 → Run `python3 run_all_tests.py` - [Testing Guide](TESTING_GUIDE.md)

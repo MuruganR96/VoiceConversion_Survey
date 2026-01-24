@@ -267,7 +267,110 @@ Seed-VC is a cutting-edge zero-shot voice conversion model optimized for real-ti
 
 ---
 
-### 6. **Kaldi-Based Neural VC**
+### 6. **DDSP-SVC** - Hybrid DSP+ML for Singing
+
+#### Overview
+DDSP-SVC combines Differentiable Digital Signal Processing with neural networks to create an efficient, high-quality singing voice conversion system. It offers the interpretability of DSP with the power of deep learning.
+
+#### Architecture
+- **Feature Encoder**: ContentVec or HuBERT-Soft for voice characteristics
+- **DDSP Synthesis**: Differentiable DSP engine for audio generation
+- **Vocoder**: NSF-HiFiGAN for quality enhancement
+- **Pitch Extractor**: RMVPE for f0 detection
+- **Inference**: Rectified-flow ODE with configurable steps
+
+#### Specifications
+- **Model Size**: 50-100MB
+- **GPU Memory**: 4-8GB VRAM
+- **Latency**: 100-300ms (RTX 4060)
+- **Sample Rate**: 44.1kHz (default)
+- **Quality**: High (comparable to SoftVC VITS/RVC)
+- **Training Data**: ~1000 audio clips (2s+ each)
+
+#### Key Features
+- **Hybrid approach**: Combines DSP interpretability with neural power
+- **Efficient training**: Faster than SoftVC VITS, comparable to RVC
+- **Real-time capable**: Sliding window, cross-fading, SOLA splicing
+- **Multi-speaker support**: Up to n speakers with labeled data
+- **Resource efficient**: Lower consumption than SoftVC VITS
+
+#### GitHub Repository
+**Official**: `yxlllc/DDSP-SVC`
+- **URL**: https://github.com/yxlllc/DDSP-SVC
+- **Status**: Actively maintained
+- **License**: MIT
+
+#### Strengths
+✅ More efficient than SoftVC VITS
+✅ Interpretable DDSP approach
+✅ Real-time capable with lower resources
+✅ Fast training (comparable to RVC)
+✅ Singing voice specialist
+✅ GUI available for real-time use
+
+#### Weaknesses
+⚠️ Original synthesis needs vocoder enhancement for best quality
+⚠️ Slightly higher resource usage than latest RVC
+⚠️ Requires quality dataset for optimal results
+
+**Use Case**: Singing voice conversion on mid-range GPUs (RTX 4060+), users who want efficiency without sacrificing too much quality
+
+---
+
+### 7. **kNN-VC** - Zero-Shot with k-Nearest Neighbors
+
+#### Overview
+kNN-VC performs voice conversion using k-nearest neighbors regression, requiring no model training. Published at Interspeech 2023, it enables any-to-any voice conversion with just reference audio.
+
+#### Architecture
+- **Encoder**: WavLM-Large (frozen, pretrained self-supervised model)
+- **Converter**: k-nearest neighbors regression (non-parametric)
+- **Vocoder**: HiFi-GAN adapted for WavLM features
+
+**Process**: Source features are matched to k-nearest neighbors from reference audio, then vocoded to output waveform.
+
+#### Specifications
+- **Model Size**: ~300MB (WavLM encoder)
+- **GPU Memory**: 2-4GB VRAM (GPU optional, CPU works)
+- **Latency**: Variable (depends on reference audio length)
+- **Sample Rate**: 16kHz
+- **Quality**: Good (WER 6.29%, CER 2.34%)
+- **Training Data**: Zero-shot (5 min reference audio recommended)
+
+#### Key Features
+- **True zero-shot**: No training required whatsoever
+- **Any-to-any**: Works for any speaker pair
+- **Non-parametric**: Simple k-NN matching, no learned parameters
+- **CPU-friendly**: Can run on CPU (unlike most models)
+- **Torch Hub integration**: Easy deployment
+- **Minimal dependencies**: Just torch, torchaudio, numpy
+
+#### GitHub Repository
+**Official**: `bshall/knn-vc`
+- **URL**: https://github.com/bshall/knn-vc
+- **Paper**: Interspeech 2023
+- **Status**: Research code, maintained
+
+#### Strengths
+✅ Simplest setup (no training needed)
+✅ True zero-shot (just provide reference audio)
+✅ CPU-compatible (most flexible hardware requirements)
+✅ Any-to-any speaker conversion
+✅ Non-parametric (interpretable k-NN matching)
+✅ Minimal dependencies
+
+#### Weaknesses
+⚠️ Quality dependent on reference audio quality and length
+⚠️ kNN search overhead with longer references (slower)
+⚠️ No real-time guarantees
+⚠️ Lower quality than trained models (RVC, GPT-SoVITS)
+⚠️ Single frozen encoder limits domain adaptation
+
+**Use Case**: Research, quick prototyping, CPU-only servers, educational purposes, baseline comparisons
+
+---
+
+### 8. **Kaldi-Based Neural VC**
 
 #### Overview
 Traditional but robust approach using Kaldi toolkit with neural vocoders.
@@ -354,22 +457,26 @@ Combines GPT-style language modeling with SoVITS for extremely high-quality few-
 | **GPT-SoVITS** | ★★★★★ | ⭐⭐ | 5s-1min | Few-shot, highest quality |
 | **SoftVC VITS** | ★★★★★ | ⭐⭐⭐ | 10min+ | Singing, high quality |
 | **RVC** | ★★★★★ | ⭐⭐⭐⭐ | 10min+ | Balanced quality/speed |
+| **DDSP-SVC** | ★★★★ | ⭐⭐⭐⭐ | ~1000 clips | Singing, efficient |
 | **Seed-VC** | ★★★★ | ⭐⭐⭐⭐⭐ | Zero-shot | Real-time, zero-shot |
 | **FreeVC** | ★★★★ | ⭐⭐⭐ | Zero-shot | Research, any-to-any |
+| **kNN-VC** | ★★★ | ⭐⭐ | Zero-shot | CPU/research, simple |
 | **VITS** | ★★★★ | ⭐⭐⭐⭐ | Hours | Multi-speaker TTS |
 
 ### Feature Comparison
 
-| Feature | GPT-SoVITS | SoftVC VITS | RVC | Seed-VC | FreeVC |
-|---------|------------|-------------|-----|---------|--------|
-| **Zero-Shot** | ✅ | ❌ | ❌ | ✅ | ✅ |
-| **Few-Shot (5-10min)** | ✅ | ✅ | ✅ | ❌ | ❌ |
-| **Real-Time (GPU)** | ❌ | ✅ | ✅ | ✅ | ❌ |
-| **Singing Voice** | ✅ | ✅ | ✅ | ✅ | ❌ |
-| **Cross-Lingual** | ✅ | ❌ | ❌ | ❌ | ✅ |
-| **WebUI** | ✅ | ✅ | ✅ | ✅ | ❌ |
-| **API Server** | ✅ | ❌ | ❌ | ❌ | ❌ |
-| **Auto Pitch** | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Feature | GPT-SoVITS | SoftVC VITS | RVC | DDSP-SVC | Seed-VC | FreeVC | kNN-VC |
+|---------|------------|-------------|-----|----------|---------|--------|--------|
+| **Zero-Shot** | ✅ | ❌ | ❌ | ❌ | ✅ | ✅ | ✅ |
+| **Few-Shot (5-10min)** | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| **Real-Time (GPU)** | ❌ | ✅ | ✅ | ✅ | ✅ | ❌ | ⚠️ |
+| **Singing Voice** | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ |
+| **Cross-Lingual** | ✅ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ |
+| **WebUI** | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ |
+| **API Server** | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| **Auto Pitch** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **CPU-Compatible** | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
+| **Hybrid DSP+ML** | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ |
 
 ---
 
