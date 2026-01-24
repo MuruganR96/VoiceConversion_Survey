@@ -1,22 +1,38 @@
-# Voice Conversion: M2F & F2M for Edge Deployment
+# Voice Conversion: M2F & F2M - Complete Guide
 
-**Real-time voice conversion optimized for CPU with ≤2MB memory constraint**
+**Edge + Server voice conversion solutions: CPU-optimized (≤2MB) and GPU state-of-the-art**
 
 ---
 
 ## Project Overview
 
-This repository provides comprehensive documentation and testing frameworks for voice conversion between male and female voices, specifically optimized for edge device deployment with strict resource constraints.
+This repository provides comprehensive documentation, testing frameworks, and deployment guides for voice conversion between male and female voices, covering:
 
-### Target Specifications
+1. **Edge Deployment**: CPU-only, ≤2MB, real-time (DSP & quantized ML)
+2. **Server Deployment**: GPU-optimized, state-of-the-art quality (Deep Learning)
+3. **Testing Framework**: Actual performance results with benchmarks
+
+### Deployment Scenarios
+
+#### Edge Deployment (CPU, ≤2MB)
 - **Platform**: CPU-only (no GPU required)
 - **Memory**: ≤2MB model size
 - **Latency**: <100ms (real-time capable)
 - **Use Case**: Edge devices, embedded systems, mobile applications
+- **Quality**: Good (acceptable for real-time)
+
+#### Server Deployment (GPU, High Quality)
+- **Platform**: NVIDIA GPU (CUDA)
+- **Memory**: No constraint (10MB-1GB models)
+- **Latency**: 50-800ms (acceptable for server)
+- **Use Case**: Batch processing, high-quality API services
+- **Quality**: State-of-the-art (near-human quality)
 
 ---
 
 ## Approaches Covered
+
+### Edge Deployment (This Section)
 
 ### 1. DSP-Based Methods
 - **PSOLA** (Pitch Synchronous Overlap-Add)
@@ -49,6 +65,40 @@ This repository provides comprehensive documentation and testing frameworks for 
   - INT8 quantization techniques
   - Knowledge distillation
   - Model compression pipelines
+
+### Server Deployment (GPU State-of-the-Art)
+
+- **GPT-SoVITS** ⭐ Best Quality
+  - Memory: 500MB-1GB
+  - Quality: Exceptional (MOS 4.6/5.0)
+  - Few-shot: 5s-1min training data
+  - Use: Production API
+
+- **RVC** (Retrieval-based Voice Conversion)
+  - Memory: 50-200MB
+  - Quality: Excellent (MOS 4.5/5.0)
+  - Real-time: Yes (with GPU)
+  - Use: Real-time server applications
+
+- **SoftVC VITS**
+  - Memory: 40-100MB
+  - Quality: Excellent (singing voice)
+  - Training: 10+ minutes data
+  - Use: Singing voice conversion
+
+- **Seed-VC**
+  - Memory: 50-150MB
+  - Quality: Good (MOS 4.2/5.0)
+  - Latency: 50-150ms (lowest)
+  - Use: Low-latency server
+
+- **FreeVC**
+  - Memory: 100-300MB
+  - Quality: Good
+  - Zero-shot: Yes (no training)
+  - Use: Research, any-to-any conversion
+
+📘 **See**: [SERVER_SIDE_GPU_MODELS.md](SERVER_SIDE_GPU_MODELS.md) for complete GPU deployment guide
 
 ---
 
@@ -422,21 +472,52 @@ A: +4 to +7 semitones (F0 multiply by 1.5-1.8) with formant shift +15-20%.
 **Q: What's the typical pitch shift for F2M?**
 A: -4 to -7 semitones (F0 multiply by 0.6-0.75) with formant shift -15-20%.
 
+**Q: Edge vs Server - Which should I use?**
+A: Edge (WORLD/PSOLA) for real-time on-device. Server (GPT-SoVITS/RVC) for highest quality batch processing.
+
+**Q: What's the best GPU model for production?**
+A: GPT-SoVITS for best quality, RVC for real-time, Seed-VC for lowest latency. See SERVER_DEPLOYMENT_GUIDE.md.
+
 ---
 
 **Last Updated**: January 24, 2026
-**Version**: 1.0
-**Status**: Ready for Testing
+**Version**: 2.0 (Added Server-Side GPU Models)
+**Status**: Complete - Edge & Server Solutions
 
 ---
 
 ## Quick Links
 
-- [📄 Technical Report](VOICE_CONVERSION_TECHNICAL_REPORT.md) - Comprehensive analysis
-- [📋 GitHub Repositories](GITHUB_REPOSITORIES.md) - Ready-to-use code with setup instructions
-- [🔧 WORLD Setup Guide](https://github.com/mmorise/World) - Official WORLD repository
-- [🎤 PSOLA Voice Changer](https://github.com/radinshayanfar/voice-gender-changer) - Simple PSOLA implementation
-- [🤖 TinyVC](https://github.com/uthree/tinyvc) - Lightweight neural VC
-- [📚 Awesome Voice Conversion](https://github.com/JeffC0628/awesome-voice-conversion) - Curated resource list
+### Edge Deployment (CPU, ≤2MB)
+- [📄 Technical Report](VOICE_CONVERSION_TECHNICAL_REPORT.md) - DSP & ML edge approaches
+- [📋 GitHub Repositories](GITHUB_REPOSITORIES.md) - Edge deployment repos
+- [🧪 Testing Guide](TESTING_GUIDE.md) - How to test locally
+- [📊 Actual Test Results](ACTUAL_TEST_RESULTS.md) - Performance metrics
+- [🔧 WORLD Setup](https://github.com/mmorise/World) - Recommended edge solution
 
-**Ready to get started? See [GITHUB_REPOSITORIES.md](GITHUB_REPOSITORIES.md) for step-by-step installation instructions!**
+### Server Deployment (GPU, High Quality)
+- [🚀 Server-Side GPU Models](SERVER_SIDE_GPU_MODELS.md) - State-of-the-art DL models
+- [⚡ Server Deployment Guide](SERVER_DEPLOYMENT_GUIDE.md) - Quick setup & API deployment
+- [🏆 GPT-SoVITS](https://github.com/RVC-Boss/GPT-SoVITS) - Best quality (recommended)
+- [⚡ RVC](https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI) - Real-time server
+- [🎵 SoftVC VITS](https://github.com/svc-develop-team/so-vits-svc) - Singing voice
+
+### Resources
+- [📚 Awesome Voice Conversion](https://github.com/JeffC0628/awesome-voice-conversion) - Curated list
+- [📝 Project Summary](PROJECT_SUMMARY.md) - Complete overview
+
+---
+
+## Quick Decision Guide
+
+**Need real-time on mobile/edge?**
+→ Use **WORLD Vocoder** (C++) - [Start Here](GITHUB_REPOSITORIES.md)
+
+**Need highest quality on server?**
+→ Use **GPT-SoVITS** (GPU) - [Start Here](SERVER_DEPLOYMENT_GUIDE.md)
+
+**Need real-time on server?**
+→ Use **RVC** or **Seed-VC** (GPU) - [Start Here](SERVER_DEPLOYMENT_GUIDE.md)
+
+**Just want to test quickly?**
+→ Run `python3 run_all_tests.py` - [Testing Guide](TESTING_GUIDE.md)
