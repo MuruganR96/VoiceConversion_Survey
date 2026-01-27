@@ -554,3 +554,81 @@ A: Yes! kNN-VC is CPU-compatible and works on any platform (Linux/Windows/macOS)
 
 **Just want to test quickly?**
 → Run `python3 run_all_tests.py` - [Testing Guide](TESTING_GUIDE.md)
+
+---
+
+## License
+
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+
+### Third-Party Licenses
+
+This project references multiple open-source projects, each with their own licenses:
+
+- **WORLD Vocoder**: BSD-3-Clause License
+- **PyWorld**: MIT License
+- **RVC**: MIT License
+- **GPT-SoVITS**: MIT License
+- **SoftVC VITS**: AGPL-3.0 License ⚠️
+- **Seed-VC**: MIT License
+- **DDSP-SVC**: MIT License
+- **kNN-VC**: MIT License
+- **PyTorch**: BSD-3-Clause License
+- **TensorFlow**: Apache 2.0 License
+
+**Important**: SoftVC VITS uses AGPL-3.0, which requires source disclosure for network use. If using SoftVC VITS in a commercial product, consider MIT-licensed alternatives (RVC, Seed-VC) or comply with AGPL requirements.
+
+📄 **Full licensing details**: See [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md)
+
+### Ethical Use
+
+Voice conversion technology should be used responsibly:
+
+✅ **Allowed**:
+- Personal projects with consent
+- Academic research
+- Accessibility tools
+- Content creation (with disclosure)
+
+❌ **Prohibited**:
+- Deepfakes without consent
+- Fraud or impersonation
+- Bypassing authentication
+- Misinformation campaigns
+
+See [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md) for complete ethical guidelines.
+
+---
+
+## Citation
+
+If you use this project for academic research, please cite:
+
+```bibtex
+@misc{voiceconversion2026,
+  title={Voice Conversion: Male-to-Female and Female-to-Male - Complete Survey},
+  author={Murugan, R.},
+  year={2026},
+  howpublished={\url{https://github.com/MuruganR96/VoiceConversion_Survey}},
+  note={Comprehensive documentation for DSP, ML Edge, and GPU-based voice conversion}
+}
+```
+
+Also cite the specific models/papers you use (references in literature documents).
+
+---
+
+## Acknowledgments
+
+This project builds upon the excellent work of many researchers and open-source contributors:
+
+- **Masanori Morise** - WORLD Vocoder
+- **RVC-Boss** - GPT-SoVITS
+- **RVC-Project** - Retrieval-based Voice Conversion
+- **SVC Develop Team** - SoftVC VITS
+- **Plachtaa** - Seed-VC
+- **yxlllc** - DDSP-SVC
+- **Benjamin van Niekerk** - kNN-VC
+- All contributors to PyTorch, TensorFlow, and other libraries
+
+Special thanks to the research community for advancing voice conversion technology.
